@@ -1,0 +1,23 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [master]
+    tags: ['v*']
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+      - name: Build test image
+        run: docker build --tag polls-test-image .
+      - name: Static code analysis
+        run: docker run --rm polls-test-image python manage.py check
+      - name: Run tests
+        run: docker run --rm polls-test-image python manage.py test polls --verbosity 2
