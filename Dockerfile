@@ -8,7 +8,10 @@ python -m pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN useradd --create-home --uid 10001 django && chown -R django:django /app
+# /app/data is a mount point for a persistent SQLite database.
+RUN mkdir -p /app/data && \
+    useradd --create-home --uid 10001 django && \
+    chown -R django:django /app
 USER django
 
 EXPOSE 8000
